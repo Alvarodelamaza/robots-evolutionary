@@ -8,9 +8,16 @@ from genotype import Genotype
 from individual import Individual
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
+import sys
+sys.path.append('../../ci_group')
+sys.path.append('../../modular_robot')
+sys.path.append('../../modular_robot_simulation')
+sys.path.append('../../simulation')
+sys.path.append('../../experimentation')
+sys.path.append('../../simulators/mujoco_simulator')
 from revolve2.experimentation.database import OpenMethod, open_database_sqlite
 from revolve2.experimentation.logging import setup_logging
+
 
 
 def main() -> None:
@@ -24,12 +31,14 @@ def main() -> None:
 
     with Session(dbengine) as ses:
         row = ses.execute(
+
             select(Genotype, Individual.fitness)
             .join_from(Genotype, Individual, Genotype.id == Individual.genotype_id)
             .order_by(Individual.fitness.desc())
             .limit(1)
         ).one()
         assert row is not None
+
 
         genotype = row[0]
         fitness = row[1]

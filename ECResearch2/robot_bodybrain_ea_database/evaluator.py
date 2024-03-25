@@ -1,5 +1,11 @@
 """Evaluator class."""
-
+import sys
+sys.path.append('../../ci_group')
+sys.path.append('../../modular_robot')
+sys.path.append('../../modular_robot_simulation')
+sys.path.append('../../simulation')
+sys.path.append('../../experimentation')
+sys.path.append('../../simulators/mujoco_simulator')
 from revolve2.ci_group import fitness_functions, terrains
 from revolve2.ci_group.simulation_parameters import make_standard_batch_parameters
 from revolve2.modular_robot import ModularRobot
@@ -8,6 +14,7 @@ from revolve2.modular_robot_simulation import (
     Terrain,
     simulate_scenes,
 )
+import custom_terrain
 from revolve2.simulators.mujoco_simulator import LocalSimulator
 
 
@@ -31,7 +38,8 @@ class Evaluator:
         self._simulator = LocalSimulator(
             headless=headless, num_simulators=num_simulators
         )
-        self._terrain = terrains.flat()
+
+        self._terrain = custom_terrain.staircase()
 
     def evaluate(
         self,
@@ -58,14 +66,29 @@ class Evaluator:
             batch_parameters=make_standard_batch_parameters(),
             scenes=scenes,
         )
-
+        """
         # Calculate the xy displacements.
         xy_displacements = [
-            fitness_functions.xy_displacement(
+            fitness_functions.xyz_displacement(
                 states[0].get_modular_robot_simulation_state(robot),
-                states[-1].get_modular_robot_simulation_state(robot),
-            )
+                states[-1].get_modular_robot_simulation_state(robot))
             for robot, states in zip(robots, scene_states)
         ]
+        #print(scene_states[0][0].get_modular_robot_simulation_state(robots[0]).get_pose().position.y,scene_states[0][-1].get_modular_robot_simulation_state(robots[0]).get_pose().position.y)
+        """
+        all_states_robots=[]
+        for robot, states in zip(robots, scene_states):
+            all_states = []
+            for state in states:
+                all_states.append(state.get_modular_robot_simulation_state(robot))
+            all_states_robots.append(all_states)
+
+        xy_displacements = [
+             fitness_functions.z_cumulative_displacement(states_)
+         for states_ in all_states_robots
+         ]
+
+
+
 
         return xy_displacements

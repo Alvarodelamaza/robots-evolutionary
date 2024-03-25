@@ -66,6 +66,54 @@ class BrainCpgInstance(BrainInstance):
         self._total_time = 0.0
         self._update_interval = 10.0
 
+    def update_weights2(self, robot_position: list[float]):
+        # Create the CPPN network and build its phenotype from the genotype
+        brain_net = multineat.NeuralNetwork()
+        self._genotype.BuildPhenotype(brain_net)
+
+        # Calculate new internal and external weights
+        internal_weights, external_weights = self._calculate_weights_using_robot_position(robot_position)
+
+        # Update the weight matrix
+        self._weight_matrix = self.cpg_network_structure.make_connection_weights_matrix(
+            {cpg: weight for cpg, weight in zip(self.cpg_network_structure.cpgs, internal_weights)},
+            {pair: weight for pair, weight in zip(self.cpg_network_structure.connections, external_weights)}
+        )
+
+    def _calculate_weights_using_robot_position(self, robot_position) -> tuple[list[float], list[float]]:
+        brain_net = multineat.NeuralNetwork()
+        self._genotype.BuildPhenotype(brain_net)
+
+        internal_weights = []
+        for active_hinge in self._active_hinges:
+            # Now we use the robot's global position for all hinges
+            weight = self._evaluate_network(
+                brain_net,
+                [
+                    1.0,  # Bias input
+                    float(robot_position[0]),
+                    float(robot_position[1]),
+                    float(robot_position[2])
+                ],
+            )
+            internal_weights.append(weight)
+
+        external_weights = []
+        for _ in self._connections:
+            # External weights are also based on the robot's global position
+            weight = self._evaluate_network(
+                brain_net,
+                [
+                    1.0,  # Bias input
+                    float(robot_position[0]),
+                    float(robot_position[1]),
+                    float(robot_position[2])
+                ],
+            )
+            external_weights.append(weight)
+
+        return internal_weights, external_weights
+
     def update_weights(self, sensor_data: list[float]):
         # 创建 CPPN 网络并从 genotype 构建其表现型
         brain_net = multineat.NeuralNetwork()
@@ -155,6 +203,8 @@ class BrainCpgInstance(BrainInstance):
         dt: float,
         sensor_state: ModularRobotSensorState,
         control_interface: ModularRobotControlInterface,
+        vel:float,
+        position: list[float]
     ) -> None:
         """
         Control the modular robot.
@@ -178,11 +228,15 @@ class BrainCpgInstance(BrainInstance):
         sensors = [active_hinge.sensor for active_hinge in self._active_hinges if active_hinge.sensor is not None]
         assert len(sensors) == len(self._active_hinges), "One of the active hinges does not have a sensor set."
         current_positions = [sensor_state.get_active_hinge_sensor_state(sensor).position for sensor in sensors]
-        # print("Current active hinge positions:", current_positions)
+        #print("Current active hinge positions:", current_positions)
 
         self._total_time += dt
         self._update_timer +=dt
-        if self._update_timer >= self._update_interval:
-            # print(f"Time to print. Current total time: {self._total_time} 秒")
-            self.update_weights(current_positions)
+
+        #if self._update_timer >= self._update_interval:
+        if vel<0.000001 and vel>-0.000001:
+            #print('control')
+            #print(f"Time to print. Current total time: {self._total_time} 秒")
+            self.update_weights2(position)
+            #print(position)
             self._update_timer = 0

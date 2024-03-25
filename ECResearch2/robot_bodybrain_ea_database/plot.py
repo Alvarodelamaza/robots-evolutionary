@@ -3,6 +3,13 @@
 import config
 import matplotlib.pyplot as plt
 import pandas
+import sys
+sys.path.append('../../ci_group')
+sys.path.append('../../modular_robot')
+sys.path.append('../../modular_robot_simulation')
+sys.path.append('../../simulation')
+sys.path.append('../../experimentation')
+sys.path.append('../../simulators/mujoco_simulator')
 from experiment import Experiment
 from generation import Generation
 from individual import Individual
@@ -94,9 +101,9 @@ def main() -> None:
 
     plt.xlabel("Generation index")
     plt.ylabel("Fitness")
-    plt.title("Mean and max fitness across repetitions with std as shade")
+    plt.title("Mean and max fitness across repetitions with std as shade (staircase)")
     plt.legend()
-    plt.savefig("fitness_over_generations.png", dpi=300)
+    plt.savefig("fitness_over_generations-spv.png", dpi=300)
     plt.show()
 
 

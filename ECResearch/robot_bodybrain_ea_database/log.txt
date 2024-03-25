@@ -53,3 +53,45 @@ Start optimization process.
 Generation 1 / 100.
 Starting simulation batch with MuJoCo.
 Finished batch.
+=======================================
+=======================================
+=======================================
+New log starts here.
+=======================================
+=======================================
+=======================================
+----------------
+Start experiment
+Rng seed: 1710441951668023
+Saving experiment configuration.
+Generating initial population.
+Evaluating initial population.
+Starting simulation batch with MuJoCo.
+=======================================
+=======================================
+=======================================
+New log starts here.
+=======================================
+=======================================
+=======================================
+----------------
+Start experiment
+Rng seed: 1710495418273816
+Saving experiment configuration.
+Generating initial population.
+Evaluating initial population.
+Starting simulation batch with MuJoCo.
+=======================================
+=======================================
+=======================================
+New log starts here.
+=======================================
+=======================================
+=======================================
+----------------
+Start experiment
+Rng seed: 1710497028600688
+Saving experiment configuration.
+Generating initial population.
+Evaluating initial population.
+Starting simulation batch with MuJoCo.

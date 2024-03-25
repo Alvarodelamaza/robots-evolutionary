@@ -1,11 +1,18 @@
 """Main script for the example."""
 
 import logging
-
+import sys
+sys.path.append('../../ci_group')
+sys.path.append('../../modular_robot')
+sys.path.append('../../modular_robot_simulation')
+sys.path.append('../../simulation')
+sys.path.append('../../experimentation')
+sys.path.append('../../simulators/mujoco_simulator')
 import config
 import multineat
 import numpy as np
 import numpy.typing as npt
+
 from base import Base
 from evaluator import Evaluator
 from experiment import Experiment
@@ -15,6 +22,7 @@ from individual import Individual
 from population import Population
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
+
 
 from revolve2.experimentation.database import OpenMethod, open_database_sqlite
 from revolve2.experimentation.logging import setup_logging

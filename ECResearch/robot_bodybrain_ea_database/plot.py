@@ -3,6 +3,13 @@
 import config
 import matplotlib.pyplot as plt
 import pandas
+import sys
+sys.path.append('../../ci_group')
+sys.path.append('../../modular_robot')
+sys.path.append('../../modular_robot_simulation')
+sys.path.append('../../simulation')
+sys.path.append('../../experimentation')
+sys.path.append('../../simulators/mujoco_simulator')
 from experiment import Experiment
 from generation import Generation
 from individual import Individual

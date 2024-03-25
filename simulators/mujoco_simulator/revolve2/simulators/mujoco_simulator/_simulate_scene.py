@@ -2,6 +2,7 @@ import logging
 import math
 
 import cv2
+import matplotlib.pyplot as plt
 import mujoco
 import numpy as np
 import numpy.typing as npt
@@ -92,6 +93,9 @@ def simulate_scene(
     control_interface = ControlInterfaceImpl(
         data=data, abstraction_to_mujoco_mapping=mapping
     )
+    velo=[]
+    stack = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    cum_average = np.mean(stack)
     while (time := data.time) < (
         float("inf") if simulation_time is None else simulation_time
     ):
@@ -102,7 +106,16 @@ def simulate_scene(
             simulation_state = SimulationStateImpl(
                 data=data, abstraction_to_mujoco_mapping=mapping
             )
-            scene.handler.handle(simulation_state, control_interface, control_step)
+            stack.pop()
+            stack.insert(0,data.qvel[1])
+            cum_average = np.mean(stack)
+            position=data.qpos[0:3]
+            scene.handler.handle(simulation_state, control_interface, control_step,cum_average, position)
+            velo.append(cum_average)
+            #print(cum_average)
+            #print('control')
+
+
 
         # sample state if it is time
         if sample_step is not None:
@@ -142,6 +155,7 @@ def simulate_scene(
             img = np.flip(img, axis=0)  # img is upside down initially
             video.write(img)
 
+
     if not headless or record_settings is not None:
         viewer.close()
 
@@ -155,5 +169,5 @@ def simulate_scene(
         )
 
     logging.info(f"Scene {scene_id} done.")
-
+    #print(velo)
     return simulation_states

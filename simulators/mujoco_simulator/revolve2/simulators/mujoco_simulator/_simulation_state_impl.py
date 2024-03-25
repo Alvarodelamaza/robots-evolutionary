@@ -2,7 +2,13 @@ import mujoco
 import numpy as np
 import numpy.typing as npt
 from pyrr import Quaternion, Vector3
-
+import sys
+sys.path.append('../../ci_group')
+sys.path.append('../../modular_robot')
+sys.path.append('../../modular_robot_simulation')
+sys.path.append('../../simulation')
+sys.path.append('../../experimentation')
+sys.path.append('../../simulators/mujoco_simulator')
 from revolve2.simulation.scene import (
     JointHinge,
     MultiBodySystem,
@@ -88,3 +94,10 @@ class SimulationStateImpl(SimulationState):
         """
         joint_mujoco = self._abstraction_to_mujoco_mapping.hinge_joint[UUIDKey(joint)]
         return float(self._qpos[joint_mujoco.id])
+
+    """
+    def get_core_acceleration(self, ) -> float:
+        
+        joint_mujoco = self._abstraction_to_mujoco_mapping.hinge_joint[UUIDKey(joint)]
+        return float(self._qpos[joint_mujoco.id])
+    """

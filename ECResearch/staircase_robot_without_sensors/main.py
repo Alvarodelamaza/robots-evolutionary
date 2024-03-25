@@ -1,7 +1,13 @@
 """Main script for the example."""
 
 import logging
-
+import sys
+sys.path.append('../../ci_group')
+sys.path.append('../../modular_robot')
+sys.path.append('../../modular_robot_simulation')
+sys.path.append('../../simulation')
+sys.path.append('../../experimentation')
+sys.path.append('../../simulators/mujoco_simulator')
 import config
 import multineat
 import numpy as np

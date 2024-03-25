@@ -103,7 +103,7 @@ def main() -> None:
     plt.ylabel("Fitness")
     plt.title("Mean and max fitness across repetitions with std as shade (staircase)")
     plt.legend()
-    plt.savefig("fitness_over_generations-spv.png", dpi=300)
+    plt.savefig("fitness_over_generations-spvv.png", dpi=300)
     plt.show()
 
 
